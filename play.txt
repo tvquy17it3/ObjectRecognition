@@ -1,0 +1,13 @@
+python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt  --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 --output output/output_02.avi
+
+D:\BTPython\ObjectRecognition\ObjectRecognition
+
+pyimagesearch /  : Mô-đun này chứa thuật toán theo dõi centroid. Thuật toán theo dõi centroid được trình bày trong phầnThuật toán theo dõi đối tượng của Kết hợp,
+pyimagesearch/ : This module contains the centroid tracking algorithm. The centroid tracking algorithm is covered in the “Combining object tracking algorithms” section
+
+mobilenet_ssd /  : Chứa các tệp mô hình học sâu của Caffe. Chúng tôi sẽ sử dụng Trình phát hiện một lần di động (SSD) của MobileNet
+mobilenet_ssd/ : Contains the Caffe deep learning model files. We’ll be using a MobileNet Single Shot Detector (SSD) which is covered at the top of this blog post in the section,
+
+Để triển khai bộ đếm người của chúng tôi, chúng tôi sẽ sử dụng cả OpenCV và dlib. Chúng tôi sẽ sử dụng OpenCV cho các chức năng xử lý hình ảnh / thị giác máy tính tiêu chuẩn, cùng với trình phát hiện đối tượng học sâu cho mọi người.
+
+Sau đó, chúng tôi sẽ sử dụng dlib để thực hiện các bộ lọc tương quan. Chúng tôi có thể sử dụng OpenCV ở đây là tốt; tuy nhiên, việc thực hiện theo dõi đối tượng dlib dễ dàng hơn một chút để làm việc với dự án này.

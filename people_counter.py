@@ -1,20 +1,11 @@
-# USAGE
-# To read and write back out to video:
-# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt \
-#	--model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 \
-#	--output output/output_01.avi
 #play:  python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt  --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 --output output/output_02.avi
-# To read from webcam and write back out to disk:
-# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt \
-#	--model mobilenet_ssd/MobileNetSSD_deploy.caffemodel \
-#	--output output/webcam_output.avi
-
-# import the necessary packages
 from pyimagesearch.centroidtracker import CentroidTracker
 from pyimagesearch.trackableobject import TrackableObject
 from imutils.video import VideoStream
 from imutils.video import FPS
+import multiprocessing
 import numpy as np
+import datetime
 import argparse
 import imutils
 import time
@@ -45,18 +36,18 @@ CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
 	"sofa", "train", "tvmonitor"]
 
 # load our serialized model from disk
-print("[INFO] loading model...")
+print("- loading model...")
 net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 
 # if a video path was not supplied, grab a reference to the webcam
 if not args.get("input", False):
-	print("[INFO] starting video stream...")
+	print("- starting video stream...")
 	vs = VideoStream(src=0).start()
 	time.sleep(2.0)
 
 # otherwise, grab a reference to the video file
 else:
-	print("[INFO] opening video file...")
+	print("- opening video file...")
 	vs = cv2.VideoCapture(args["input"])
 
 # initialize the video writer (we'll instantiate later if need be)
@@ -76,6 +67,7 @@ trackableObjects = {}
 
 # initialize the total number of frames processed thus far, along
 # with the total number of objects that have moved either up or down
+datetime_bd = datetime.datetime.now()
 totalFrames = 0
 totalDown = 0
 totalUp = 0
@@ -237,35 +229,37 @@ while True:
 
 		# draw both the ID of the object and the centroid of the
 		# object on the output frame
-		text = "ID {}".format(objectID)
+		text = "STT {}".format(objectID)
 		cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 
 	# construct a tuple of information we will be displaying on the
 	# frame
+	datetime_object = datetime.datetime.now()
 	info = [
-		("Up", totalUp),
-		("Down", totalDown),
-		("Status", status),
+	    ("Date", datetime_object),
+		("Ra", totalDown),
+		("Vao", totalUp),
+		("Tinh trang", status),
 	]
 
 	# loop over the info tuples and draw them on our frame
 	for (i, (k, v)) in enumerate(info):
 		text = "{}: {}".format(k, v)
 		cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+			cv2.FONT_HERSHEY_SIMPLEX, 0.6, (109, 56, 107), 2)
 
 	# check to see if we should write the frame to disk
 	if writer is not None:
 		writer.write(frame)
 
 	# show the output frame
-	cv2.imshow("Frame", frame)
+	cv2.imshow("Tri Tue Nhan Tao - AI", frame)
 	key = cv2.waitKey(1) & 0xFF
 
 	# if the `q` key was pressed, break from the loop
-	if key == ord("q"):
+	if key == ord("e"):
 		break
 
 	# increment the total number of frames processed thus far and
@@ -274,9 +268,18 @@ while True:
 	fps.update()
 
 # stop the timer and display FPS information
+
 fps.stop()
-print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+print("- elapsed time: {:.2f}".format(fps.elapsed()))
+print("- approx. FPS: {:.2f}".format(fps.fps()))
+print("Vao :",totalUp)
+print("Ra  :",totalDown)
+datetime_object = datetime.datetime.now()
+print("Date:",datetime_object)
+
+file = open('data.txt','a+')
+file.write("Thoi gian: Tu  "+str(datetime_bd)+"  Den:  "+ str(datetime_object) +", Vao: "+str(totalUp)+", Ra:  " + str(totalDown)+"\n\n")
+file.close()
 
 # check to see if we need to release the video writer pointer
 if writer is not None:
